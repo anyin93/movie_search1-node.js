@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>영화 정보 검색</title>
+  </head>
+  <body>
+    <table style="margin-left:auto; margin-right:auto;background:lightgreen; border:1px solid black;">
+      <tr>
+        <td>  <h1>영화정보 검색</h1></td>
+        <td>
+          <form class="" action="/search_post" method="post">
+            <input type="text" name="search" value="">
+          </form>
+        </td>
+        <td>  <button class="ajaxsend">검색</button></td>
+      </tr>
+    </table>
+
+    <table style="margin:auto;">
+      <tr>
+        <td>영화 이름: </td>
+        <td class="name"></td>
+      </tr>
+      <tr>
+        <td>영화 코드: </td>
+        <td class="code"></td>
+      </tr>
+      <tr>
+        <td>제작 년도: </td>
+        <td class="year"></td>
+      </tr>
+      <tr>
+        <td>제작 국가: </td>
+        <td class="contry"></td>
+      </tr>
+      <tr>
+        <td>장르: </td>
+        <td class="kind"></td>
+      </tr>
+    </table>
+
+
+
+
+
+
+
+
+    <script>
+      //버튼에 이벤트 등록
+      document.querySelector('.ajaxsend').addEventListener('click',function(){
+        var inputdata=document.forms[0].elements[0].value;
+
+        sendAjax('http://127.0.0.1:3000/ajax_send_search',inputdata);
+      })
+
+      //서버에 json데이터가 날라간다.
+      function sendAjax(url,data){
+        var data = {'movie_name' : data };
+        data=JSON.stringify(data);
+
+        var xhr = new XMLHttpRequest();
+
+        xhr.open('POST',url);
+        xhr.setRequestHeader('Content-Type',"application/json");
+        xhr.send(data);
+
+        xhr.addEventListener('load',function(){
+          var result=JSON.parse(xhr.responseText);
+          if(result.status!="success") return;
+          document.querySelector(".name").innerHTML=result.movie_name;
+          document.querySelector(".code").innerHTML=result.movie_code;
+          document.querySelector(".year").innerHTML=result.c_year;
+          document.querySelector(".contry").innerHTML=result.c_country;
+          document.querySelector(".kind").innerHTML=result.kind;
+
+        });
+
+      }
+
+    </script>
+  </body>
+</html>
